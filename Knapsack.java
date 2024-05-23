@@ -8,11 +8,6 @@ import java.util.stream.Collectors;
  */
 public class Knapsack {
     /**
-     * Represents an item that can be inserted in the knapsack.
-     */
-    public record Item(int weight, int value) {}
-
-    /**
      * Returns the optimal list of items that can be added to a knapsack of a given maximum weight using dynamic programming. Executes in O(number of items * maxWeight) (pseudo-polynomial).
      * @param items the possible items to be inserted in the knapsack.
      * @param maxWeight the maximum weight of the knapsack.
@@ -101,22 +96,5 @@ public class Knapsack {
         }
 
         return knapsack;
-    }
-
-    public static void main(String[] args) {
-        List<Item> items = new LinkedList<>();
-        items.add(new Item(2, 3));
-        items.add(new Item(3, 4));
-        items.add(new Item(4, 5));
-        items.add(new Item(5, 8));
-
-        int maxWeight = 10;
-
-        List<Item> solution = Knapsack.solveByDynamicProgramming(items, maxWeight);
-
-        System.out.println("Selected items:");
-        for (Item item : solution) {
-            System.out.println(item);
-        }
     }
 }
