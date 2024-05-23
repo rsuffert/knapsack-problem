@@ -1,8 +1,10 @@
+import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
- * Implements a solution to the Knapsack problem using dynamic programming.
+ * Implements a solution to the Knapsack problem using dynamic programming and also a greedy approximation.
  */
 public class Knapsack {
     /**
@@ -11,12 +13,12 @@ public class Knapsack {
     public record Item(int weight, int value) {}
 
     /**
-     * Returns the optimal list of items that can be added to a knapsack of a given maximum weight.
+     * Returns the optimal list of items that can be added to a knapsack of a given maximum weight using dynamic programming. Executes in O(number of items * maxWeight) (pseudo-polynomial).
      * @param items the possible items to be inserted in the knapsack.
      * @param maxWeight the maximum weight of the knapsack.
      * @return the optimal list of items that can be added to the knapsack.
      */
-    public static List<Item> calculate(List<Item> items, int maxWeight) {
+    public static List<Item> solveByDynamicProgramming(List<Item> items, int maxWeight) {
         // dummy item at first position
         items = new LinkedList<>(items);
         items.add(0, null);
@@ -31,7 +33,7 @@ public class Knapsack {
      * @return the memoization matrix for the given instance of the problem.
      */
     private static int[][] buildMemoMatrix(List<Item> items, int maxWeight) {
-        int[][] M = new int[items.size()][maxWeight+1];
+        int[][] M = new int[items.size()][maxWeight+1]; // items already includes the dummy item, so no need to do + 1
 
         for (int x=1; x<M.length; x++) {
             for (int W=0; W<M[x].length; W++) {
@@ -78,6 +80,29 @@ public class Knapsack {
             calculateItemsRecursion(currentItemIdx-1, maxWeight, items, memoMatrix, solution);
     }
 
+    /**
+     * Provides a greedy approximation for the problem. Executed in O(n) (linear).
+     * @param items the possible items to be inserted in the knapsack.
+     * @param maxWeight the maximum weight of the knapsack.
+     * @return a list containing the greedy approximation solution for the given instance of the problem.
+     */
+    public static List<Item> solveByGreedyApproximation(List<Item> items, int maxWeight) {
+        List<Item> knapsack = new LinkedList<>();
+        List<Item> sorted = items.stream()
+                            .sorted(Comparator.comparing(Item::weight))
+                            .collect(Collectors.toList());
+
+        int remainingWeight = maxWeight;
+        for (Item i : sorted) {
+            if (i.weight() <= remainingWeight) {
+                knapsack.add(i);
+                maxWeight -= i.weight();
+            }
+        }
+
+        return knapsack;
+    }
+
     public static void main(String[] args) {
         List<Item> items = new LinkedList<>();
         items.add(new Item(2, 3));
@@ -87,7 +112,7 @@ public class Knapsack {
 
         int maxWeight = 10;
 
-        List<Item> solution = Knapsack.calculate(items, maxWeight);
+        List<Item> solution = Knapsack.solveByDynamicProgramming(items, maxWeight);
 
         System.out.println("Selected items:");
         for (Item item : solution) {
