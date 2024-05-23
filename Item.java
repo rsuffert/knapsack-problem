@@ -1,4 +1,4 @@
     /**
      * Represents an item that can be inserted in the knapsack.
      */
-    public record Item(int weight, int value) {}
+    public record Item(String description, int weight, int value) {}
