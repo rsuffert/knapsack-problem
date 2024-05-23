@@ -1,4 +1,3 @@
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -80,7 +79,7 @@ public class Knapsack {
     }
 
     public static void main(String[] args) {
-        List<Item> items = new ArrayList<>();
+        List<Item> items = new LinkedList<>();
         items.add(new Item(2, 3));
         items.add(new Item(3, 4));
         items.add(new Item(4, 5));
