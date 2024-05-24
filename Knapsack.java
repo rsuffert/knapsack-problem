@@ -8,6 +8,29 @@ import java.util.stream.Collectors;
  */
 public class Knapsack {
     /**
+     * Provides a greedy approximation for the problem. Executed in O(n) (linear).
+     * @param items the possible items to be inserted in the knapsack.
+     * @param maxWeight the maximum weight of the knapsack.
+     * @return a list containing the greedy approximation solution for the given instance of the problem.
+     */
+    public static List<Item> solveByGreedyApproximation(List<Item> items, int maxWeight) {
+        List<Item> knapsack = new LinkedList<>();
+        List<Item> sorted = items.stream()
+                                 .sorted(Comparator.comparing(Item::weight))
+                                 .collect(Collectors.toList());
+
+        int remainingWeight = maxWeight;
+        for (Item i : sorted) {
+            if (i.weight() <= remainingWeight) {
+                knapsack.add(i);
+                remainingWeight -= i.weight();
+            }
+        }
+
+        return knapsack;
+    }
+
+    /**
      * Returns the optimal list of items that can be added to a knapsack of a given maximum weight using dynamic programming. Executes in O(number of items * maxWeight) (pseudo-polynomial).
      * @param items the possible items to be inserted in the knapsack.
      * @param maxWeight the maximum weight of the knapsack.
@@ -18,7 +41,10 @@ public class Knapsack {
         items = new LinkedList<>(items);
         items.add(0, null);
 
-        return calculateItems(items, maxWeight, buildMemoMatrix(items, maxWeight));
+        int[][] memoMatrix = buildMemoMatrix(items, maxWeight);
+        List<Item> solution = new LinkedList<>();
+        calculateItemsRecursion(items.size()-1, maxWeight, items, memoMatrix, solution);
+        return solution;
     }
 
     /**
@@ -44,19 +70,6 @@ public class Knapsack {
     }
 
     /**
-     * Given the memoization matrix, calculates the items that have been inserted to the knapsack.
-     * @param items the possible items to be inserted in the knapsack.
-     * @param maxWeight the maximum weight of the knapsack.
-     * @param memoMatrix the memoization matrix.
-     * @return the optimal list of items inserted in the knapsack.
-     */
-    private static List<Item> calculateItems(List<Item> items, int maxWeight, int[][] memoMatrix) {
-        List<Item> solution = new LinkedList<>();
-        calculateItemsRecursion(items.size()-1, maxWeight, items, memoMatrix, solution);
-        return solution;
-    }
-
-    /**
      * Recursively calculates the items inserted in the knapsack.
      * @param currentItemIdx the index of the current item being inspected.
      * @param maxWeight the maximum weight of the knapsack.
@@ -73,28 +86,5 @@ public class Knapsack {
         }
         else
             calculateItemsRecursion(currentItemIdx-1, maxWeight, items, memoMatrix, solution);
-    }
-
-    /**
-     * Provides a greedy approximation for the problem. Executed in O(n) (linear).
-     * @param items the possible items to be inserted in the knapsack.
-     * @param maxWeight the maximum weight of the knapsack.
-     * @return a list containing the greedy approximation solution for the given instance of the problem.
-     */
-    public static List<Item> solveByGreedyApproximation(List<Item> items, int maxWeight) {
-        List<Item> knapsack = new LinkedList<>();
-        List<Item> sorted = items.stream()
-                            .sorted(Comparator.comparing(Item::weight))
-                            .collect(Collectors.toList());
-
-        int remainingWeight = maxWeight;
-        for (Item i : sorted) {
-            if (i.weight() <= remainingWeight) {
-                knapsack.add(i);
-                maxWeight -= i.weight();
-            }
-        }
-
-        return knapsack;
     }
 }

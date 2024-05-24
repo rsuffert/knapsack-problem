@@ -5,6 +5,18 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class App {
+    public static void printSolution(List<Item> solution) {
+        System.out.println("- Selected items:");
+        solution.stream()
+                .forEach(item -> System.out.println("\t" + item));
+        System.out.printf("- Total weight: %d\n", solution.stream()
+                                                          .mapToInt(Item::weight)
+                                                          .sum());
+        System.out.printf("- Total value: %d\n", solution.stream()
+                                                          .mapToInt(Item::value)
+                                                          .sum());
+    }
+
     public static void main(String[] args) {
         // check number of arguments
         if (args.length != 2) {
@@ -28,16 +40,20 @@ public class App {
             e.printStackTrace();
         }
 
-        // calculate the solution and print it
-        List<Item> solution = Knapsack.solveByDynamicProgramming(items, maxWeight);
-        System.out.println("- Selected items:");
-        solution.stream()
-                .forEach(item -> System.out.println("\t" + item));
-        System.out.printf("- Total weight: %d\n", solution.stream()
-                                                        .mapToInt(Item::weight)
-                                                        .sum());
-        System.out.printf("- Total value: %d\n", solution.stream()
-                                                        .mapToInt(Item::value)
-                                                        .sum());
+        // calculate the solutions and print them
+        System.out.println("===================== OPTIMAL SOLUTION =====================");
+        List<Item> optimalSolution = Knapsack.solveByDynamicProgramming(items, maxWeight);
+        printSolution(optimalSolution);
+        System.out.println("===================== GREEDY APPROXIMATION =====================");
+        List<Item> greedyApproximation = Knapsack.solveByGreedyApproximation(items, maxWeight);
+        printSolution(greedyApproximation);
+        System.out.println("===================== COMPARISON =====================");
+        int optimalValue = optimalSolution.stream()
+                                          .mapToInt(Item::value)
+                                          .sum();
+        int approximatedValue = greedyApproximation.stream()
+                                                   .mapToInt(Item::value)
+                                                   .sum();
+        System.out.printf("Relative error: %.2f%%\n", (double) Math.abs(optimalValue-approximatedValue)/Math.abs(optimalValue)*100);
     }
 }
