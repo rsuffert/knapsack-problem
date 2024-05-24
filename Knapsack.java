@@ -38,12 +38,12 @@ public class Knapsack {
      */
     public static List<Item> solveByDynamicProgramming(List<Item> items, int maxWeight) {
         // dummy item at first position
-        items = new LinkedList<>(items);
-        items.add(0, null);
+        List<Item> itemsWDummy = new LinkedList<>(items);
+        itemsWDummy.add(0, null);
 
-        int[][] memoMatrix = buildMemoMatrix(items, maxWeight);
+        int[][] memoMatrix = buildMemoMatrix(itemsWDummy, maxWeight);
         List<Item> solution = new LinkedList<>();
-        calculateItemsRecursion(items.size()-1, maxWeight, items, memoMatrix, solution);
+        calculateItemsRecursion(itemsWDummy.size()-1, maxWeight, itemsWDummy, memoMatrix, solution);
         return solution;
     }
 
