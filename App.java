@@ -30,9 +30,14 @@ public class App {
 
         // calculate the solution and print it
         List<Item> solution = Knapsack.solveByDynamicProgramming(items, maxWeight);
-        System.out.println("Selected items:");
-        for (Item item : solution) {
-            System.out.println("\t" + item);
-        }
+        System.out.println("- Selected items:");
+        solution.stream()
+                .forEach(item -> System.out.println("\t" + item));
+        System.out.printf("- Total weight: %d\n", solution.stream()
+                                                        .mapToInt(Item::weight)
+                                                        .sum());
+        System.out.printf("- Total value: %d\n", solution.stream()
+                                                        .mapToInt(Item::value)
+                                                        .sum());
     }
 }
