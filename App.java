@@ -54,6 +54,6 @@ public class App {
         int approximatedValue = greedyApproximation.stream()
                                                    .mapToInt(Item::value)
                                                    .sum();
-        System.out.printf("Relative error: %.2f%%\n", (double) Math.abs(optimalValue-approximatedValue)/Math.abs(optimalValue)*100);
+        System.out.printf("- Relative error: %.2f%%\n", (double) Math.abs(optimalValue-approximatedValue)/Math.abs(optimalValue)*100);
     }
 }

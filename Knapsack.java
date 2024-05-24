@@ -8,7 +8,7 @@ import java.util.stream.Collectors;
  */
 public class Knapsack {
     /**
-     * Provides a greedy approximation for the problem. Executed in O(n) (linear).
+     * Provides a greedy approximation for the problem. Executed in O(n log n).
      * @param items the possible items to be inserted in the knapsack.
      * @param maxWeight the maximum weight of the knapsack.
      * @return a list containing the greedy approximation solution for the given instance of the problem.
@@ -16,7 +16,7 @@ public class Knapsack {
     public static List<Item> solveByGreedyApproximation(List<Item> items, int maxWeight) {
         List<Item> knapsack = new LinkedList<>();
         List<Item> sorted = items.stream()
-                                 .sorted(Comparator.comparing(Item::weight))
+                                 .sorted(Comparator.comparingDouble((Item i) -> (double) i.value() / i.weight()).reversed())
                                  .collect(Collectors.toList());
 
         int remainingWeight = maxWeight;
