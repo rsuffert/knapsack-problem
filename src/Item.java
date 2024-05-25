@@ -1,3 +1,4 @@
+package src;
     /**
      * Represents an item that can be inserted in the knapsack.
      */
