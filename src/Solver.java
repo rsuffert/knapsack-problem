@@ -5,6 +5,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.StringJoiner;
 import java.util.stream.Collectors;
 
 public class Solver {
@@ -37,26 +38,24 @@ public class Solver {
         List<Item> greedyApproximation = Knapsack.solveByGreedyApproximation(items, maxWeight);
 
         // calculate the infos to write to the CSV file for the optimal solution
-        String optimalSelectedItems = optimalSolution.stream()
-                                                     .map(Item::description)
-                                                     .collect(Collectors.joining(", "));
-        int optimalTotalWeight = optimalSolution.stream()
-                                                .mapToInt(Item::weight)
-                                                .sum();
-        int optimalTotalValue = optimalSolution.stream()
-                                               .mapToInt(Item::value)
-                                               .sum();
+        StringJoiner optimalSelectedItemsJoiner = new StringJoiner(", ");
+        int optimalTotalWeight = 0;
+        int optimalTotalValue = 0;
+        for (Item i : optimalSolution) {
+            optimalTotalWeight += i.weight();
+            optimalTotalValue += i.value();
+            optimalSelectedItemsJoiner.add(i.description());
+        }
 
         // calculate the infos to write to the CSV file for the approximated solution
-        String approximationSelectedItems = greedyApproximation.stream()
-                                                               .map(Item::description)
-                                                               .collect(Collectors.joining(", "));
-        int approximationTotalWeight = greedyApproximation.stream()
-                                                    .mapToInt(Item::weight)
-                                                    .sum();
-        int approximationTotalValue = greedyApproximation.stream()
-                                                   .mapToInt(Item::value)
-                                                   .sum();
+        StringJoiner approximationSelectedItemsJoiner = new StringJoiner(", ");
+        int approximationTotalWeight = 0;
+        int approximationTotalValue = 0;
+        for (Item i : greedyApproximation) {
+            approximationTotalWeight += i.weight();
+            approximationTotalValue += i.value();
+            approximationSelectedItemsJoiner.add(i.description());
+        }
         double approximationRelativeError = 0.0;
 	    if (optimalTotalValue != 0)
             approximationRelativeError = (double) Math.abs(optimalTotalValue-approximationTotalValue)/Math.abs(optimalTotalValue)*100;
@@ -64,8 +63,9 @@ public class Solver {
         // write calculated info to the CSV file
         try (FileWriter writer = new FileWriter(outputFilePath)) {
             writer.write("SOLUTION;ITEMS;WEIGHT;VALUE;ERROR\n");
-            writer.write(String.format("OPTIMAL;%s;%d;%d;0%%\n", optimalSelectedItems, optimalTotalWeight, optimalTotalValue));
-            writer.write(String.format("APPROXIMATED;%s;%d;%d;%.2f%%", approximationSelectedItems, approximationTotalWeight, approximationTotalValue, approximationRelativeError));
+            writer.write(String.format("OPTIMAL;%s;%d;%d;0%%\n", optimalSelectedItemsJoiner.toString(), optimalTotalWeight, optimalTotalValue));
+            writer.write(String.format("APPROXIMATED;%s;%d;%d;%.2f%%", approximationSelectedItemsJoiner.toString(), approximationTotalWeight, 
+                                                                       approximationTotalValue, approximationRelativeError));
         }
         catch (IOException e) {
             e.printStackTrace();
