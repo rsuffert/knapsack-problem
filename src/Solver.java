@@ -69,7 +69,9 @@ public class Solver {
         int approximationTotalValue = greedyApproximation.stream()
                                                    .mapToInt(Item::value)
                                                    .sum();
-        double approximationRelativeError = (double) Math.abs(optimalTotalValue-approximationTotalValue)/Math.abs(optimalTotalValue)*100;
+        double approximationRelativeError = 0.0;
+	    if (optimalTotalValue != 0)
+            approximationRelativeError = (double) Math.abs(optimalTotalValue-approximationTotalValue)/Math.abs(optimalTotalValue)*100;
 
         // write calculated info to the CSV file
         try (FileWriter writer = new FileWriter(outputFilePath)) {
